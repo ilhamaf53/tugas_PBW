@@ -1,64 +1,68 @@
+<?php
+// koneksi
+$koneksi = new mysqli("localhost", "root", "", "latihan_form");
+?>
 <html>
 
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
 	<title>Homepage Pribadi Saya</title>
 </head>
 
 <body>
-	<center><b>Selamat Datang <br> di Halaman Guest Book</b></center>
-	<form id="form1" name="form1" method="post">
-		Nama Anda: <input type="text" size="10" maxlength="40" name="nama">
-		<br><br>
-		komentar Anda: <textarea rows="5" cols="20" name="komentar"></textarea>
-		<br><br>
-		<input type="submit" name="Submit" value="kirim">
-	</form>
-	<?php
-
-	$host = 'localhost';
-	$user = 'root';
-	$pass = '';
-	$db = 'latihan_form';
-	$tbl_name = 'form';
-	$link = mysqli_connect($host, $user, $pass, $db);
-
-	if (isset($_POST['Submit'])) {
-		$nama = $_POST['nama'];
-		$komen = $_POST['komentar'];
-
-		$sql = "INSERT INTO $tbl_name(nama, komentar)VALUES('$nama', '$komen')";
-		$result = mysqli_query($link, $sql);
-	}
-	$sql = "SELECT * FROM $tbl_name ORDER BY id ASC";
-	// ORDER BY id DESC is order result by ascending
-
-	$result = mysqli_query($link, $sql);
-	?>
-	<table width="90%" border="0" align="center" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
-		<tr>
-			<th width="20%" align="center" bgcolor="#E6E6E6"><strong>No.</strong></th>
-			<th width="53%" align="center" bgcolor="#E6E6E6"><strong>Nama</strong></th>
-			<th width="15%" align="center" bgcolor="#E6E6E6"><strong>Komentar</strong></th>
-		</tr>
-
+	<div class="container">
+		<div class="text-center">
+			<b>Selamat Datang <br> di Halaman Guest Book</b>
+		</div>
+		<form id="form" name="form" method="post">
+			<div class="form-group">
+				<label>Nama </label>
+				<input type="text" name="nama" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Komentar</label>
+				<textarea name="komentar" rows="10" class="form-control"></textarea>
+			</div>
+			<button class="btn btn-primary" name="kirim">Kirim</button>
+		</form>
 		<?php
-		$nomor = 1;
-		// Start looping table row
-		while ($rows = mysqli_fetch_assoc($result)) :
+		if (isset($_POST['kirim'])) {
+			$nama = $_POST['nama'];
+			$komen = $_POST['komentar'];
+
+			$sql = "INSERT INTO form(nama, komentar) VALUES('$nama', '$komen')";
+			$result = mysqli_query($koneksi, $sql);
+		}
+		$sql = "SELECT * FROM form ORDER BY id ASC";
+		// ORDER BY id DESC is order result by ascending
+
+		$result = mysqli_query($koneksi, $sql);
 		?>
 
-			<tr>
-				<td align="center" bgcolor="#FFFFFF"><?= $nomor ?></td>
-				<td align="center" bgcolor="#FFFFFF"><?= $rows['nama']; ?></td>
-				<td align="center" bgcolor="#FFFFFF"><?= $rows['komentar']; ?></td>
-			</tr>
-		<?php
-			$nomor++;
-		// Exit looping and close connection
-		endwhile;
-		mysqli_close($link);
-		?>
-	</table>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Nama</th>
+					<th>Komentar</th>
+				</tr>
+			</thead>
+			<?php $nomor = 1; ?>
+			<?php while ($rows = mysqli_fetch_assoc($result)) : ?>
+				<tbody>
+					<tr>
+						<td><?= $nomor ?></td>
+						<td><?= $rows['nama']; ?></td>
+						<td><?= $rows['komentar']; ?></td>
+					</tr>
+				</tbody>
+				<?php $nomor++; ?>
+			<?php endwhile; ?>
+		</table>
+	</div>
 </body>
 
 </html>
