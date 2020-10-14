@@ -29,23 +29,29 @@ $koneksi = new mysqli("localhost", "root", "", "latihan_form");
 			<button class="btn btn-primary" name="kirim">Kirim</button>
 		</form>
 		<?php
+		$error = '';
 		if (isset($_POST['kirim'])) {
 			$nama = $_POST['nama'];
 			$komen = $_POST['komentar'];
-
+		}
+		if (!empty(trim($nama)) && !empty(trim($komen))) {
 			$sql = "INSERT INTO form(nama, komentar) VALUES('$nama', '$komen')";
 			$result = mysqli_query($koneksi, $sql);
-		}
+		} else $error = "Nama Dan Komentar Tidak Boleh Kosong";
+
 		$sql = "SELECT * FROM form ORDER BY id ASC";
-		// ORDER BY id DESC is order result by ascending
 
 		$result = mysqli_query($koneksi, $sql);
 		?>
-
+		<?php if ($error != '') { ?>
+			<div id="error">
+				<?= $error; ?>
+			</div>
+		<?php } ?>
+		<br>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th>No.</th>
 					<th>Nama</th>
 					<th>Komentar</th>
 				</tr>
@@ -54,13 +60,12 @@ $koneksi = new mysqli("localhost", "root", "", "latihan_form");
 			<?php while ($rows = mysqli_fetch_assoc($result)) : ?>
 				<tbody>
 					<tr>
-						<td><?= $nomor ?></td>
 						<td><?= $rows['nama']; ?></td>
 						<td><?= $rows['komentar']; ?></td>
 					</tr>
+					<?php $nomor++; ?>
+				<?php endwhile; ?>
 				</tbody>
-				<?php $nomor++; ?>
-			<?php endwhile; ?>
 		</table>
 	</div>
 </body>
