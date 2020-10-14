@@ -33,11 +33,12 @@ $koneksi = new mysqli("localhost", "root", "", "latihan_form");
 		if (isset($_POST['kirim'])) {
 			$nama = $_POST['nama'];
 			$komen = $_POST['komentar'];
+
+			if (!empty(trim($nama)) && !empty(trim($komen))) {
+				$sql = "INSERT INTO form(nama, komentar) VALUES('$nama', '$komen')";
+				$result = mysqli_query($koneksi, $sql);
+			} else $error = "Nama Dan Komentar Tidak Boleh Kosong";
 		}
-		if (!empty(trim($nama)) && !empty(trim($komen))) {
-			$sql = "INSERT INTO form(nama, komentar) VALUES('$nama', '$komen')";
-			$result = mysqli_query($koneksi, $sql);
-		} else $error = "Nama Dan Komentar Tidak Boleh Kosong";
 
 		$sql = "SELECT * FROM form ORDER BY id ASC";
 
@@ -52,6 +53,7 @@ $koneksi = new mysqli("localhost", "root", "", "latihan_form");
 		<table class="table table-bordered">
 			<thead>
 				<tr>
+					<th>No. </th>
 					<th>Nama</th>
 					<th>Komentar</th>
 				</tr>
@@ -60,6 +62,7 @@ $koneksi = new mysqli("localhost", "root", "", "latihan_form");
 			<?php while ($rows = mysqli_fetch_assoc($result)) : ?>
 				<tbody>
 					<tr>
+						<td><?= $nomor; ?></td>
 						<td><?= $rows['nama']; ?></td>
 						<td><?= $rows['komentar']; ?></td>
 					</tr>
